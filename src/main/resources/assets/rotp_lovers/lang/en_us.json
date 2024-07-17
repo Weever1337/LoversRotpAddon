@@ -1,0 +1,8 @@
+{
+  "entity.rotp_lovers.lovers": "Lovers",
+  "stand.rotp_lovers.lovers": "Lovers",
+
+  "action.rotp_lovers.into_entity": "Into Entity",
+  "action.rotp_lovers.nothing": "Nothing",
+  "rotp_lovers.config.multiple_damage": "Multiple Damage"
+}
