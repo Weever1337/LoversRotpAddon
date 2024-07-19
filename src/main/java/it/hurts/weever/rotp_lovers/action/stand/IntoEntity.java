@@ -47,7 +47,7 @@ public class IntoEntity extends StandEntityAction {
     public void standPerform(@NotNull World world, StandEntity standEntity, IStandPower userPower, StandEntityTask task) {
         if (!world.isClientSide()) {
             ActionTarget target = task.getTarget();
-            if (target.getEntity() instanceof LivingEntity){
+            if (target.getEntity() instanceof LivingEntity && target.getEntity().isAlive()) {
                 LivingEntity targetEntity = (LivingEntity) target.getEntity();
                 PlayerEntity user = (PlayerEntity) userPower.getUser();
                 if (Util.getPlayers().containsValue(user)) {
@@ -66,6 +66,7 @@ public class IntoEntity extends StandEntityAction {
         public static int getMultipleDamage() {
             return LoversConfig.getCommonConfigInstance(false).DefaultMultipleDamage.get();
         }
+
         @SubscribeEvent
         public static void livingHurtEvent(LivingHurtEvent event) {
             LivingEntity entity = event.getEntityLiving();
@@ -73,10 +74,9 @@ public class IntoEntity extends StandEntityAction {
             if (entity == null || entity.isDeadOrDying() || !entity.isAlive()) return;
             Map<LivingEntity, PlayerEntity> players = Util.getPlayers();
             if (players.containsValue(entity)) {
-                for (LivingEntity key : players.keySet()) {
-                    LivingEntity value = players.get(key);
-                    if (value == entity) {
-                        key.hurt(new DamageSource("lovers"), event.getAmount() * getMultipleDamage());
+                for (Map.Entry<LivingEntity, PlayerEntity> entry : players.entrySet()) {
+                    if (entry.getValue() == entity) {
+                        entry.getKey().hurt(new DamageSource("lovers"), event.getAmount() * getMultipleDamage());
                         // event.setCanceled(true);
                     }
                 }
