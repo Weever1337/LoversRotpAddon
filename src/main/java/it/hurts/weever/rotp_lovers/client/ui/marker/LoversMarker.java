@@ -23,7 +23,7 @@ import java.util.stream.Stream;
 public class LoversMarker extends MarkerRenderer {
 
     public LoversMarker(Minecraft mc){
-        super(new ResourceLocation(LoversAddon.MOD_ID,"textures/action/into_entity.png"), mc);
+        super(new ResourceLocation(LoversAddon.MOD_ID,"textures/power/lovers.png"), mc);
     }
 
     @Override
@@ -52,7 +52,7 @@ public class LoversMarker extends MarkerRenderer {
 
     public static Stream<LivingEntity> Targets(LivingEntity user){
         World world = user.level;
-        Stream<LivingEntity> entidades = world.getEntitiesOfClass(LivingEntity.class,user.getBoundingBox().inflate(50),
+        Stream<LivingEntity> entidades = world.getEntitiesOfClass(LivingEntity.class,user.getBoundingBox().inflate(100),
                 EntityPredicates.ENTITY_STILL_ALIVE).stream().filter(entity -> Util.getPlayers().containsKey(entity) && Util.getPlayers().containsValue(user));
         return entidades;
     }

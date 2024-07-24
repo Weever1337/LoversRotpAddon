@@ -3,6 +3,6 @@
   "stand.rotp_lovers.lovers": "Lovers",
 
   "action.rotp_lovers.into_entity": "Into Entity",
-  "action.rotp_lovers.nothing": "Nothing",
+  "action.rotp_lovers.retract": "Retract From Entity",
   "rotp_lovers.config.multiple_damage": "Multiple Damage"
 }

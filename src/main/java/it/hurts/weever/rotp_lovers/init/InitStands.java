@@ -30,10 +30,9 @@ public class InitStands {
                  .staminaCost(100)
          ));
 
-    public static final RegistryObject<StandEntityAction> NOTHING_FOR_ANTICRASH_NOT_CRASH = ACTIONS.register("nothing",
-            () -> new NothingForAntiCrash(new StandEntityAction.Builder()
-                    .cooldown(666)
-                    .staminaCost(666)
+    public static final RegistryObject<StandEntityAction> RETRACT = ACTIONS.register("retract",
+            () -> new RetractFromEntity(new StandEntityAction.Builder()
+                    .cooldown(6)
             ));
 
     public static final EntityStandRegistryObject<EntityStandType<StandStats>, StandEntityType<LoversEntity>> STAND_LOVERS =
@@ -45,7 +44,7 @@ public class InitStands {
                     .leftClickHotbar(
                             INTO_OR_RETRACT.get()
                     ).rightClickHotbar(
-                            NOTHING_FOR_ANTICRASH_NOT_CRASH.get()
+                            RETRACT.get()
                     ).defaultStats(StandStats.class, new StandStats.Builder()
                             .power(2.0)
                             .speed(6.0)
@@ -58,6 +57,8 @@ public class InitStands {
                     .disableManualControl().disableStandLeap()
                     .build(),
                     InitEntities.ENTITIES,
-                    () -> new StandEntityType<>(LoversEntity::new, 0.65F, 1.8F))
+                    () -> new StandEntityType<>(LoversEntity::new, 0.65F, 1.8F)
+                            .summonSound(InitSounds.VOID)
+                            .unsummonSound(InitSounds.VOID))
             .withDefaultStandAttributes();
 }

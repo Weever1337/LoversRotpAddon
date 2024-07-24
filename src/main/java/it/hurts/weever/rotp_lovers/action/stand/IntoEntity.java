@@ -47,16 +47,23 @@ public class IntoEntity extends StandEntityAction {
     public void standPerform(@NotNull World world, StandEntity standEntity, IStandPower userPower, StandEntityTask task) {
         if (!world.isClientSide()) {
             ActionTarget target = task.getTarget();
-            if (target.getEntity() instanceof LivingEntity && target.getEntity().isAlive()) {
-                LivingEntity targetEntity = (LivingEntity) target.getEntity();
-                PlayerEntity user = (PlayerEntity) userPower.getUser();
-                if (Util.getPlayers().containsValue(user)) {
-                    Util.getPlayers().entrySet().removeIf(entry -> entry.getValue() == user);
-                } else if (Util.getPlayers().containsKey(targetEntity)) {
-                    Util.getPlayers().entrySet().removeIf(entry -> entry.getKey() == targetEntity);
-                } else {
-                    Util.getPlayers().putIfAbsent(targetEntity, user);
-                }
+            PlayerEntity user = (PlayerEntity) userPower.getUser();
+            switch (target.getType()) {
+                case ENTITY:
+                    if (target.getEntity() instanceof LivingEntity && target.getEntity().isAlive()) {
+                        LivingEntity targetEntity = (LivingEntity) target.getEntity();
+                        if (Util.getPlayers().containsValue(user)) {
+                            Util.getPlayers().entrySet().removeIf(entry -> entry.getValue() == user);
+                        } else {
+                            Util.getPlayers().putIfAbsent(targetEntity, user);
+                        }
+                    }
+                    break;
+                case BLOCK:
+                case EMPTY:
+                default:
+                    Util.getPlayers().entrySet().removeIf(entry -> entry.getKey() == user);
+                    break;
             }
         }
     }
@@ -70,13 +77,13 @@ public class IntoEntity extends StandEntityAction {
         @SubscribeEvent
         public static void livingHurtEvent(LivingHurtEvent event) {
             LivingEntity entity = event.getEntityLiving();
-            DamageSource dmgSource = event.getSource();
             if (entity == null || entity.isDeadOrDying() || !entity.isAlive()) return;
             Map<LivingEntity, PlayerEntity> players = Util.getPlayers();
             if (players.containsValue(entity)) {
                 for (Map.Entry<LivingEntity, PlayerEntity> entry : players.entrySet()) {
                     if (entry.getValue() == entity) {
-                        entry.getKey().hurt(new DamageSource("lovers"), event.getAmount() * getMultipleDamage());
+                        entry.getKey().hurt(DamageSource.playerAttack(entry.getValue()), event.getAmount() * getMultipleDamage());
+                        event.setAmount(event.getAmount() / 2);
                         // event.setCanceled(true);
                     }
                 }
@@ -87,6 +94,7 @@ public class IntoEntity extends StandEntityAction {
         public static void livingDeathEvent(LivingDeathEvent event) {
             LivingEntity entity = event.getEntityLiving();
             Util.getPlayers().entrySet().removeIf(entry -> entry.getKey() == entity);
+            Util.getPlayers().entrySet().removeIf(entry -> entry.getValue() == entity);
         }
     }
 }
